@@ -47,14 +47,14 @@ export async function GET(
         : Promise.resolve(null),
     ]);
 
+  const schoolsData = schoolsRes.status === "fulfilled" ? schoolsRes.value : null;
+  console.log(`[area API] schools raw:`, JSON.stringify(schoolsData)?.slice(0, 500));
+
   const result: AreaIntelligence = {
     postcode: postcodeInfo,
     prices: pricesRes.status === "fulfilled" ? pricesRes.value : null,
     crime: crimeRes.status === "fulfilled" ? crimeRes.value : null,
-    schools:
-      schoolsRes.status === "fulfilled"
-        ? schoolsRes.value?.schools ?? []
-        : [],
+    schools: schoolsData?.schools ?? [],
     transport:
       transportRes.status === "fulfilled"
         ? transportRes.value?.stations ?? []

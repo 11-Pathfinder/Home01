@@ -83,6 +83,7 @@ export async function GET(request: NextRequest) {
       .filter((s) => s.distance <= radiusKm)
       .sort((a, b) => a.distance - b.distance);
 
+    console.log(`[schools API] lat=${lat} lng=${lng} radius=${radiusKm} → ${rows.length} from rtree, ${schools.length} after haversine`);
     return NextResponse.json({ schools });
   } catch (err) {
     console.error("Schools API error:", err);
