@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const lat = parseFloat(searchParams.get("lat") || "");
   const lng = parseFloat(searchParams.get("lng") || "");
-  const radiusKm = parseFloat(searchParams.get("radius") || "2");
+  const radiusKm = parseFloat(searchParams.get("radius") || "3");
   const phase = searchParams.get("phase"); // "Primary", "Secondary", or null for all
 
   if (isNaN(lat) || isNaN(lng)) {

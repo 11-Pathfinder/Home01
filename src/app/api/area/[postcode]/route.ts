@@ -34,7 +34,7 @@ export async function GET(
       fetch(`${origin}/api/crime?lat=${lat}&lng=${lng}`).then((r) =>
         r.ok ? r.json() : null
       ),
-      fetch(`${origin}/api/schools?lat=${lat}&lng=${lng}&radius=2`).then((r) =>
+      fetch(`${origin}/api/schools?lat=${lat}&lng=${lng}&radius=3`).then((r) =>
         r.ok ? r.json() : null
       ),
       fetch(`${origin}/api/transport?lat=${lat}&lng=${lng}`).then((r) =>

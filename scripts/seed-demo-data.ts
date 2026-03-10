@@ -576,8 +576,8 @@ async function main() {
         const urn = 100000 + schoolCount;
         const phase = s < 2 ? "Primary" : "Secondary";
         const name = `${randomChoice(schoolPrefixes)} ${oc.district.split(" ")[0]} ${randomChoice(schoolSuffixes)}`;
-        const lat = oc.lat + (Math.random() - 0.5) * 0.015;
-        const lng = oc.lng + (Math.random() - 0.5) * 0.02;
+        const lat = oc.lat + (Math.random() - 0.5) * 0.006;
+        const lng = oc.lng + (Math.random() - 0.5) * 0.008;
         const pc = allPostcodes.find((p) => p.outcode === oc.outcode) || allPostcodes[0];
 
         insertSchool.run(
