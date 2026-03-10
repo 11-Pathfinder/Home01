@@ -18,7 +18,7 @@
     "data:demographics:import": "npx tsx scripts/08-import-demographics.ts",
     "data:postcodes": "npx tsx scripts/09-enrich-postcodes.ts",
     "data:price-sqm": "npx tsx scripts/10-compute-price-sqm.ts",
-    "data:all": "npx tsx scripts/00-init-db.ts && npx tsx scripts/01-download-land-registry.ts && npx tsx scripts/02-import-land-registry.ts && npx tsx scripts/09-enrich-postcodes.ts"
+    "data:all": "npx tsx scripts/00-init-db.ts && npx tsx scripts/01-download-land-registry.ts && npx tsx scripts/02-import-land-registry.ts && npx tsx scripts/05-download-schools.ts && npx tsx scripts/06-import-schools.ts && npx tsx scripts/07-download-demographics.ts && npx tsx scripts/08-import-demographics.ts && npx tsx scripts/09-enrich-postcodes.ts && npx tsx scripts/10-compute-price-sqm.ts"
   },
   "dependencies": {
     "better-sqlite3": "^11.7.0",
