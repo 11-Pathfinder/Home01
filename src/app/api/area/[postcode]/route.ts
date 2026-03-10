@@ -28,20 +28,20 @@ export async function GET(
   // 2. Fetch all data sources in parallel
   const [pricesRes, crimeRes, schoolsRes, transportRes, demographicsRes] =
     await Promise.allSettled([
-      fetch(`${origin}/api/prices?postcode=${encodeURIComponent(decoded)}`).then((r) =>
+      fetch(`${origin}/api/prices?postcode=${encodeURIComponent(decoded)}`, { cache: "no-store" }).then((r) =>
         r.ok ? r.json() : null
       ),
-      fetch(`${origin}/api/crime?lat=${lat}&lng=${lng}`).then((r) =>
+      fetch(`${origin}/api/crime?lat=${lat}&lng=${lng}`, { cache: "no-store" }).then((r) =>
         r.ok ? r.json() : null
       ),
-      fetch(`${origin}/api/schools?lat=${lat}&lng=${lng}&radius=3`).then((r) =>
+      fetch(`${origin}/api/schools?lat=${lat}&lng=${lng}&radius=3`, { cache: "no-store" }).then((r) =>
         r.ok ? r.json() : null
       ),
-      fetch(`${origin}/api/transport?lat=${lat}&lng=${lng}`).then((r) =>
+      fetch(`${origin}/api/transport?lat=${lat}&lng=${lng}`, { cache: "no-store" }).then((r) =>
         r.ok ? r.json() : null
       ),
       lsoa_code
-        ? fetch(`${origin}/api/demographics?lsoa=${encodeURIComponent(lsoa_code)}`).then(
+        ? fetch(`${origin}/api/demographics?lsoa=${encodeURIComponent(lsoa_code)}`, { cache: "no-store" }).then(
             (r) => (r.ok ? r.json() : null)
           )
         : Promise.resolve(null),
