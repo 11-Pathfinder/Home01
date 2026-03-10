@@ -85,7 +85,9 @@ export default function SchoolsPanel({ schools }: SchoolsPanelProps) {
                   {school.numberOfPupils && (
                     <span>{school.numberOfPupils} pupils</span>
                   )}
-                  <span>{school.distance.toFixed(1)}km away</span>
+                  {school.distance != null && (
+                    <span>{school.distance.toFixed(1)}km away</span>
+                  )}
                 </div>
               </div>
 

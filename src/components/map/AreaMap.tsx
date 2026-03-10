@@ -111,7 +111,7 @@ export default function AreaMap({
         `<strong>${school.name}</strong><br/>
          ${school.phase}<br/>
          Ofsted: <span style="color:${color};font-weight:bold">${school.ofstedRating || "Not rated"}</span><br/>
-         ${school.distance.toFixed(1)}km away`
+         ${school.distance != null ? school.distance.toFixed(1) + "km away" : ""}`
       );
 
       layerGroupRef.current.addLayer(m);

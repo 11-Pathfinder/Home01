@@ -64,7 +64,7 @@ export interface School {
   gender: string | null;
   religiousCharacter: string | null;
   website: string | null;
-  distance: number; // km from search point
+  distance?: number; // km from search point (absent in directory view)
 }
 
 // --- Transport ---
