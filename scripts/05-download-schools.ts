@@ -44,7 +44,7 @@ async function main() {
   // GIAS: Direct CSV download of all establishment data
   // This is the publicly accessible bulk extract endpoint
   const giasUrl =
-    "https://ea-edubase-api-prod.azurewebsites.net/edubase/downloads/public/edubasealldata20250310.csv";
+    "https://ea-edubase-api-prod.azurewebsites.net/edubase/downloads/public/edubasealldata20260310.csv";
   const giasFallbackUrl =
     "https://ea-edubase-api-prod.azurewebsites.net/edubase/downloads/public/allestablishments.csv";
 
