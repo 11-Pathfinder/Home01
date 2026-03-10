@@ -44,3 +44,6 @@ next-env.d.ts
 /data/schools/
 /data/demographics/
 *.db
+*.db-shm
+*.db-wal
+*.db-journal
