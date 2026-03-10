@@ -144,6 +144,33 @@ export function getDistinctBoroughs(): string[] {
 }
 
 /**
+ * Get a single school by URN, with borough info.
+ */
+export function getSchoolByUrn(urn: number): (School & { district?: string }) | null {
+  const db = getDb();
+  const row = db.prepare(`
+    SELECT s.*, p.district
+    FROM schools s
+    LEFT JOIN postcodes p ON s.postcode = p.postcode
+    WHERE s.urn = ?
+  `).get(urn) as SchoolRow | undefined;
+
+  if (!row) return null;
+  return rowToSchool(row);
+}
+
+/**
+ * Get nearby schools to a given school (by URN), excluding itself.
+ */
+export function getNearbySchools(urn: number, radiusKm = 1.5, limit = 10): School[] {
+  const school = getSchoolByUrn(urn);
+  if (!school) return [];
+
+  const nearby = getSchools(school.lat, school.lng, radiusKm);
+  return nearby.filter((s) => s.urn !== urn).slice(0, limit);
+}
+
+/**
  * Get distinct phases from schools.
  */
 export function getDistinctPhases(): string[] {

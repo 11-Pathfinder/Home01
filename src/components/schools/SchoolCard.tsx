@@ -1,6 +1,7 @@
 "use client";
 
 import { forwardRef } from "react";
+import Link from "next/link";
 import type { School } from "@/lib/types";
 import { ofstedColor } from "@/lib/utils";
 
@@ -62,21 +63,13 @@ const SchoolCard = forwardRef<HTMLDivElement, SchoolCardProps>(
           </div>
         </div>
 
-        {school.website && (
-          <a
-            href={
-              school.website.startsWith("http")
-                ? school.website
-                : `https://${school.website}`
-            }
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
-            className="flex-shrink-0 text-xs text-primary-600 hover:underline"
-          >
-            Web
-          </a>
-        )}
+        <Link
+          href={`/schools/${school.urn}`}
+          onClick={(e) => e.stopPropagation()}
+          className="flex-shrink-0 text-xs text-primary-600 hover:underline"
+        >
+          Details
+        </Link>
       </div>
     );
   }
