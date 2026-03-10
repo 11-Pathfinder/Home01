@@ -19,7 +19,7 @@ export function getDb(): Database.Database {
       initDb.close();
     }
 
-    db = new Database(dbPath, { readonly: true });
+    db = new Database(dbPath);
     db.pragma("journal_mode = WAL");
     db.pragma("cache_size = -64000"); // 64MB cache
   }
