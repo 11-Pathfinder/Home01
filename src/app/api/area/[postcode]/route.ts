@@ -1,10 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { lookupPostcode } from "@/lib/postcodes";
+import { getSchools } from "@/lib/queries/schools";
+import { getPrices } from "@/lib/queries/prices";
+import { getDemographics } from "@/lib/queries/demographics";
+import { getCrimeData } from "@/lib/police-api";
+import { getNearbyStations } from "@/lib/tfl-api";
+import { getCached, setCache } from "@/lib/cache";
 import type { AreaIntelligence } from "@/lib/types";
 
 /**
  * Aggregated area intelligence endpoint.
- * Fetches all data sources in parallel for a given postcode.
+ * Calls query functions directly instead of HTTP self-calls.
  */
 export async function GET(
   request: NextRequest,
@@ -23,44 +29,44 @@ export async function GET(
   }
 
   const { lat, lng, lsoa_code } = postcodeInfo;
-  const origin = new URL(request.url).origin;
 
   // 2. Fetch all data sources in parallel
-  const [pricesRes, crimeRes, schoolsRes, transportRes, demographicsRes] =
-    await Promise.allSettled([
-      fetch(`${origin}/api/prices?postcode=${encodeURIComponent(decoded)}`, { cache: "no-store" }).then((r) =>
-        r.ok ? r.json() : null
-      ),
-      fetch(`${origin}/api/crime?lat=${lat}&lng=${lng}`, { cache: "no-store" }).then((r) =>
-        r.ok ? r.json() : null
-      ),
-      fetch(`${origin}/api/schools?lat=${lat}&lng=${lng}&radius=3`, { cache: "no-store" }).then((r) =>
-        r.ok ? r.json() : null
-      ),
-      fetch(`${origin}/api/transport?lat=${lat}&lng=${lng}`, { cache: "no-store" }).then((r) =>
-        r.ok ? r.json() : null
-      ),
-      lsoa_code
-        ? fetch(`${origin}/api/demographics?lsoa=${encodeURIComponent(lsoa_code)}`, { cache: "no-store" }).then(
-            (r) => (r.ok ? r.json() : null)
-          )
-        : Promise.resolve(null),
-    ]);
+  // DB queries are synchronous, external APIs are async
+  const prices = getPrices(decoded);
+  const schools = getSchools(lat, lng, 3);
+  const demographics = lsoa_code ? getDemographics(lsoa_code) : null;
 
-  const schoolsData = schoolsRes.status === "fulfilled" ? schoolsRes.value : null;
-  console.log(`[area API] schools raw:`, JSON.stringify(schoolsData)?.slice(0, 500));
+  // External API calls with caching (same pattern as individual route handlers)
+  const crimeCacheKey = `crime:${lat.toFixed(3)}:${lng.toFixed(3)}`;
+  const transportCacheKey = `transport:${lat.toFixed(3)}:${lng.toFixed(3)}`;
+
+  const [crimeResult, transportResult] = await Promise.allSettled([
+    (async () => {
+      const cached = getCached(crimeCacheKey);
+      if (cached) return JSON.parse(cached);
+      const data = await getCrimeData(lat, lng);
+      try { setCache(crimeCacheKey, JSON.stringify(data), 86400); } catch {}
+      return data;
+    })(),
+    (async () => {
+      const cached = getCached(transportCacheKey);
+      if (cached) return JSON.parse(cached);
+      const stations = await getNearbyStations(lat, lng);
+      try { setCache(transportCacheKey, JSON.stringify({ stations }), 86400 * 7); } catch {}
+      return { stations };
+    })(),
+  ]);
 
   const result: AreaIntelligence = {
     postcode: postcodeInfo,
-    prices: pricesRes.status === "fulfilled" ? pricesRes.value : null,
-    crime: crimeRes.status === "fulfilled" ? crimeRes.value : null,
-    schools: schoolsData?.schools ?? [],
+    prices,
+    crime: crimeResult.status === "fulfilled" ? crimeResult.value : null,
+    schools,
     transport:
-      transportRes.status === "fulfilled"
-        ? transportRes.value?.stations ?? []
+      transportResult.status === "fulfilled"
+        ? transportResult.value?.stations ?? []
         : [],
-    demographics:
-      demographicsRes.status === "fulfilled" ? demographicsRes.value : null,
+    demographics,
   };
 
   return NextResponse.json(result);
